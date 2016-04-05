@@ -12,5 +12,5 @@ created/forked from conference.py by wesc on 2014 may 24
 
 # Replace the following lines with client IDs obtained from the APIs
 # Console or Cloud Console.
-WEB_CLIENT_ID = 'replace with Web client ID'
+WEB_CLIENT_ID = '1062935441945-usvigjr94kc382mlkavqct7bfhi235a4.apps.googleusercontent.com'
 

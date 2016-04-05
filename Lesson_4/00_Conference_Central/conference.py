@@ -31,6 +31,9 @@ from utils import getUserId
 
 from settings import WEB_CLIENT_ID
 
+import logging
+logging.getLogger().setLevel(logging.DEBUG)
+
 EMAIL_SCOPE = endpoints.EMAIL_SCOPE
 API_EXPLORER_CLIENT_ID = endpoints.API_EXPLORER_CLIENT_ID
 
@@ -66,7 +69,7 @@ class ConferenceApi(remote.Service):
         user = endpoints.get_current_user()
         if not user:
             raise endpoints.UnauthorizedException('Authorization required')
-
+        logging.error("Got here.")
         # get Profile from datastore
         user_id = getUserId(user)
         p_key = ndb.Key(Profile, user_id)

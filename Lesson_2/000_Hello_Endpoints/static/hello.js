@@ -81,6 +81,15 @@ function greetByName () {
 	request.execute(sayHelloCallback);
 }
 
+function greetByPeriod () {
+	var name = document.getElementById("name_field").value;
+	var period = document.getElementById("period_field").value;
+
+	var request = gapi.client.helloworldendpoints.greetByPeriod({'name': name, 'period': period});
+	request.execute(sayHelloCallback);
+
+}
+
 // Process the JSON response
 // In this case, just show an alert dialog box
 // displaying the value of the message field in the response

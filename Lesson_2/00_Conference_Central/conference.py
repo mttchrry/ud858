@@ -32,6 +32,9 @@ from models import ProfileForm
 from models import TeeShirtSize
 
 from settings import WEB_CLIENT_ID
+from utils import getUserId
+
+import logging
 
 EMAIL_SCOPE = endpoints.EMAIL_SCOPE
 API_EXPLORER_CLIENT_ID = endpoints.API_EXPLORER_CLIENT_ID
@@ -64,25 +67,33 @@ class ConferenceApi(remote.Service):
 
     def _getProfileFromUser(self):
         """Return user Profile from datastore, creating new one if non-existent."""
-        ## TODO 2
-        ## step 1: make sure user is authed
-        ## uncomment the following lines:
-        # user = endpoints.get_current_user()
-        # if not user:
-        #     raise endpoints.UnauthorizedException('Authorization required')
-        profile = None
-        ## step 2: create a new Profile from logged in user data
-        ## you can use user.nickname() to get displayName
-        ## and user.email() to get mainEmail
+        user = endpoints.get_current_user()
+        if not user:
+            raise endpoints.UnauthorizedException('Authorization required')
+
+        # TODO 1
+        # step 1. copy utils.py from additions folder to this folder
+        #         and import getUserId from it
+        # step 2. get user id by calling getUserId(user)
+        # step 3. create a new key of kind Profile from the id
+        user_id = utils.getUserId(user)
+        p_key = ndb.Key(Profile, user_id)
+        logging.info("do we even generate a Key?")
+        logging.info(pKey)
+        print >> sys.stderr, "Something to log."
+        # TODO 3
+        # get the entity from datastore by using get() on the key
+        profile = pKey.get()
         if not profile:
             profile = Profile(
-                userId = None,
-                key = None,
-                displayName = "Test", 
-                mainEmail= None,
+                key = p_key,
+                displayName = user.nickname(), 
+                mainEmail= user.email(),
                 teeShirtSize = str(TeeShirtSize.NOT_SPECIFIED),
             )
-
+            # TODO 2
+            # save the profile to datastore
+            profile.put()
         return profile      # return Profile
 
 
@@ -98,6 +109,8 @@ class ConferenceApi(remote.Service):
                     val = getattr(save_request, field)
                     if val:
                         setattr(prof, field, str(val))
+            # TODO 4
+            # put the modified profile to datastore
 
         # return ProfileForm
         return self._copyProfileToForm(prof)
@@ -112,11 +125,11 @@ class ConferenceApi(remote.Service):
     # TODO 1
     # 1. change request class
     # 2. pass request to _doProfile function
-    @endpoints.method(message_types.VoidMessage, ProfileForm,
+    @endpoints.method(ProfileMiniForm, ProfileForm,
             path='profile', http_method='POST', name='saveProfile')
     def saveProfile(self, request):
         """Update & return user profile."""
-        return self._doProfile()
+        return self._doProfile(request)
 
 
 # registers API
