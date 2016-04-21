@@ -1,0 +1,4 @@
+cron:
+- description: Refresh the announcements every twelve hour.
+  url: /crons/set_announcement
+  schedule: every 1 minutes
